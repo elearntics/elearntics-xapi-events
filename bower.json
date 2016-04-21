@@ -1,0 +1,34 @@
+{
+  "name": "xAPI-javascript-events",
+  "version": "0.1.0",
+  "author": {
+    "email": "elenatorro@gmail.com",
+    "name": "Elena Torro",
+    "url": "https://github.com/elenatorro"
+  },
+  "description": "JavaScript event listener to register xAPI statements in a LRS",
+  "main": "lib/xAPI-javascript-events.js",
+  "moduleType": [
+    "amd",
+    "es6"
+  ],
+  "keywords": [
+    "xAPI",
+    "Tin",
+    "Can",
+    "Api",
+    "LRS",
+    "Events",
+    "Student",
+    "Tracking"
+  ],
+  "license": "MIT",
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

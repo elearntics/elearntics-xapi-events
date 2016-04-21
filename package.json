@@ -1,0 +1,33 @@
+{
+  "name": "xAPI-javascript-events",
+  "version": "0.1.0",
+  "description": "JavaScript event listener to register xAPI statements in a LRS",
+  "scripts": {
+    "test": "sh test/test.sh"
+  },
+  "keywords": [
+    "xAPI",
+    "Tin",
+    "Can",
+    "Api",
+    "LRS",
+    "Events",
+    "Student",
+    "Tracking"
+  ],
+  "author": {
+    "email": "elenatorro@gmail.com",
+    "name": "Elena Torro",
+    "url": "https://github.com/elenatorro"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "gulp": "^3.9.0",
+    "gulp-jshint": "^2.0.0",
+    "gulp-jslint": "^0.2.2",
+    "gulp-watch": "^4.3.5",
+    "mocha": "*",
+    "should": "*",
+    "xmlhttprequest-ssl": "*"
+  }
+}
