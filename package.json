@@ -3,7 +3,11 @@
   "version": "0.1.0",
   "description": "JavaScript event listener to register xAPI statements in a LRS",
   "scripts": {
-    "test": "sh test/test.sh"
+    "build": "babel src/ --out-dir lib/",
+    "lint": "eslint src/Main.js",
+    "start": "babel-node src/example.js",
+    "test:watch": "mocha --compilers js:babel-register --reporter min --watch",
+    "test": "mocha --compilers js:babel-core/register"
   },
   "keywords": [
     "xAPI",
@@ -21,13 +25,32 @@
     "url": "https://github.com/elenatorro"
   },
   "license": "MIT",
-  "dependencies": {
-    "gulp": "^3.9.0",
-    "gulp-jshint": "^2.0.0",
-    "gulp-jslint": "^0.2.2",
-    "gulp-watch": "^4.3.5",
-    "mocha": "*",
-    "should": "*",
-    "xmlhttprequest-ssl": "*"
+  "devDependencies": {
+    "babel": "^6.5.2",
+    "babel-cli": "^6.18.0",
+    "babel-core": "^6.18.2",
+    "babel-eslint": "^7.1.0",
+    "babel-plugin-add-module-exports": "^0.2.1",
+    "babel-preset-es2015": "^6.18.0",
+    "babelify": "^7.3.0",
+    "browserify": "^13.1.1",
+    "chai": "^3.5.0",
+    "coveralls": "^2.11.14",
+    "eslint": "^3.9.1",
+    "gulp": "^3.9.1",
+    "gulp-babel": "^6.1.2",
+    "gulp-browserify": "^0.5.1",
+    "gulp-livereload": "^3.8.1",
+    "gulp-sourcemaps": "^2.2.0",
+    "gulp-uglify": "^2.0.0",
+    "mocha": "^3.1.2",
+    "sinon": "^1.17.6",
+    "vinyl-buffer": "^1.0.0",
+    "vinyl-source-stream": "^1.1.0"
+  },
+  "browserify": {
+    "transform": [
+      "babelify"
+    ]
   }
 }
