@@ -1,6 +1,5 @@
 'use strict';
 
-/* Libraries */
 let
   browserify  = require('browserify'),
   buffer      = require('vinyl-buffer'),
@@ -23,25 +22,23 @@ const
     json: true
   }),
   DIST_FILENAME      = 'xapi-events.js',
+  DIST_FILENAME_MIN  = 'xapi-events.min.js',
   DIST_PATH          = 'dist',
-  DIST_TEST_FILENAME = 'test.xapi-events.js',
-  DIST_TEST_PATH     = 'dist-test',
   MAPS_PATH          = './maps',
-  SRC_FILE           = 'lib/xAPI-events.js',
-  SRC_TEST_FILE      = 'test/test.main.js',
-  WATCH_FILES        = ['lib/*.js', 'lib/**/*.js', 'test/*.js', 'test/**/*.js']
+  SRC_FILE           = 'src/xapiEvents.js',
+  WATCH_FILES        = ['src/*.js', 'src/**/*.js', 'test/*.js', 'test/**/*.js']
 ;
 
 /* Task Config */
 
 const
   BUILD_TASK       = 'build',
-  BUILD_TEST_TASK  = 'build-test',
+  BUILD_PROD_TASK  = 'build-prod-task',
   CONNECT_TASK     = 'connect',
   DEFAULT_TASK     = 'default',
-  DEFAULT_TASKS    = [BUILD_TASK, BUILD_TEST_TASK],
+  DEFAULT_TASKS    = [BUILD_TASK, BUILD_PROD_TASK],
   WATCH_TASK       = 'watch',
-  WATCH_TASKS      = [BUILD_TASK, BUILD_TEST_TASK]
+  WATCH_TASKS      = [BUILD_TASK]
 ;
 
 gulp.task(BUILD_TASK, () => {
@@ -49,24 +46,20 @@ gulp.task(BUILD_TASK, () => {
     .transform(BROWSERIFY_TRANSFORM, BABEL_CONFIG)
     .bundle()
     .pipe(source(DIST_FILENAME))
+    .pipe(gulp.dest(DIST_PATH))
+    .pipe(livereload());
+});
+
+gulp.task(BUILD_PROD_TASK, () => {
+  return browserify(SRC_FILE, BROWSERIFY_CONFIG)
+    .transform(BROWSERIFY_TRANSFORM, BABEL_CONFIG)
+    .bundle()
+    .pipe(source(DIST_FILENAME_MIN))
     .pipe(buffer())
     .pipe(sourcemaps.init())
     .pipe(uglify())
     .pipe(sourcemaps.write(MAPS_PATH))
     .pipe(gulp.dest(DIST_PATH))
-    .pipe(livereload());
-});
-
-gulp.task(BUILD_TEST_TASK, () => {
-  return browserify(SRC_TEST_FILE, BROWSERIFY_CONFIG)
-    .transform(BROWSERIFY_TRANSFORM, BABEL_CONFIG)
-    .bundle()
-    .pipe(source(DIST_TEST_FILENAME))
-    .pipe(buffer())
-    .pipe(sourcemaps.init())
-    .pipe(uglify())
-    .pipe(sourcemaps.write(MAPS_PATH))
-    .pipe(gulp.dest(DIST_TEST_PATH))
     .pipe(livereload());
 });
 

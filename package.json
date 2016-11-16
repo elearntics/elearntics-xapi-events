@@ -3,10 +3,7 @@
   "version": "0.1.0",
   "description": "JavaScript event listener to register xAPI statements in a LRS",
   "scripts": {
-    "build": "babel src/ --out-dir lib/",
-    "lint": "eslint src/Main.js",
-    "start": "babel-node src/example.js",
-    "test:watch": "mocha --compilers js:babel-register --reporter min --watch",
+    "lint": "eslint src/*.js",
     "test": "mocha --compilers js:babel-core/register"
   },
   "keywords": [
@@ -25,6 +22,9 @@
     "url": "https://github.com/elenatorro"
   },
   "license": "MIT",
+  "dependencies": {
+    "xapi-validator": "github:elenatorro/xAPI-Validator-JS"
+  },
   "devDependencies": {
     "babel": "^6.5.2",
     "babel-cli": "^6.18.0",
@@ -40,6 +40,7 @@
     "gulp": "^3.9.1",
     "gulp-babel": "^6.1.2",
     "gulp-browserify": "^0.5.1",
+    "gulp-connect": "^5.0.0",
     "gulp-livereload": "^3.8.1",
     "gulp-sourcemaps": "^2.2.0",
     "gulp-uglify": "^2.0.0",
