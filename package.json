@@ -22,11 +22,7 @@
     "url": "https://github.com/elenatorro"
   },
   "license": "MIT",
-  "dependencies": {
-    "xapi-validator": "github:elenatorro/xAPI-Validator-JS"
-  },
   "devDependencies": {
-    "babel": "^6.5.2",
     "babel-cli": "^6.18.0",
     "babel-core": "^6.18.2",
     "babel-eslint": "^7.1.0",
@@ -47,7 +43,8 @@
     "mocha": "^3.1.2",
     "sinon": "^1.17.6",
     "vinyl-buffer": "^1.0.0",
-    "vinyl-source-stream": "^1.1.0"
+    "vinyl-source-stream": "^1.1.0",
+    "xapi-validator": "github:elenatorro/xAPI-Validator-JS"
   },
   "browserify": {
     "transform": [
