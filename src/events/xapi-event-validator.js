@@ -1,43 +1,44 @@
-import logger from '../utils/logger';
+import { EventStatus } from './event-status';
 
 const
-  IS_FUNCTION                    = '[object Function]',
-  MUST_HAVE_ID                   = 'Must have an id',
-  MUST_HAVE_UNIQUE_ID            = 'Must have a unique id',
-  MUST_HAVE_STATUS               = 'Must have a status',
+  IS_FUNCTION = '[object Function]',
+  MUST_HAVE_ID = 'Must have an id',
+  MUST_HAVE_UNIQUE_ID = 'Must have a unique id',
+  MUST_HAVE_STATUS = 'Must have a status',
   MUST_HAVE_STATEMENT_PROPERTIES = 'Must have a statement with the required statement properties',
-  MUST_HAVE_CALLBACK             = 'Must have a correct callback function'
-;
+  MUST_HAVE_CALLBACK = 'Must have a correct callback function',
+  NOT_VALID = 'Not valid event:',
+  VALID = 'Valid event';
 
-var xapiEventValidator;
+let xapiEventValidator;
 
 xapiEventValidator = {
-  log: logger.log,
-  errors: [],
-
-  validateEvent(e) {
-    this.log('validateEvent', {e});
-    this.errors = [];
-
-    _mustHaveId.call(this, e);
-    _mustHaveUniqueId.call(this, e);
-    _mustHaveStatus.call(this, e);
-    _mustHaveStatementWithStatementProperties.call(this, e);
-    _mustHaveCallbackFunction.call(this, e);
-    return this;
-  },
-
   isValidEvent(e) {
-    this.log('isValidEvent', {e});
-    return !!this.validateEvent(e).errors.length;
+    this.log('isValidEvent', { e });
+    return !_validateEvent.call(this, e).errors.length;
   }
 };
 
-export {xapiEventValidator};
+export { xapiEventValidator };
 
 /* Private */
+
+function _validateEvent(e) {
+  this.log('validateEvent', { e });
+  this.errors = [];
+
+  _mustHaveId.call(this, e);
+  _mustHaveUniqueId.call(this, e);
+  _mustHaveStatus.call(this, e);
+  _mustHaveStatementWithStatementProperties.call(this, e);
+  _mustHaveCallbackFunction.call(this, e);
+
+  this.errors ? this.log(NOT_VALID, { e, errors: this.errors }) : this.log(VALID);
+  return this;
+}
+
 function _mustHaveId(e) {
-  this.log('_mustHaveId', {e});
+  this.log('_mustHaveId', { e });
 
   if (!e.id) {
     this.errors.push(MUST_HAVE_ID);
@@ -47,10 +48,10 @@ function _mustHaveId(e) {
   return true;
 }
 
-function _mustHaveUniqueId(events, e) {
-  this.log('_mustHaveUniqueId', {events, e});
+function _mustHaveUniqueId(e) {
+  this.log('_mustHaveUniqueId', { e });
 
-  if (!!events.filter((xapiEvent) => xapiEvent.id === e.id).length) {
+  if (!!this.events.length || !!this.events.filter((xapiEvent) => xapiEvent.id === e.id).length) {
     this.errors.push(MUST_HAVE_UNIQUE_ID);
     return false;
   }
@@ -58,9 +59,9 @@ function _mustHaveUniqueId(events, e) {
 }
 
 function _mustHaveStatus(e) {
-  this.log('_mustHaveStatus', {e});
+  this.log('_mustHaveStatus', { e });
 
-  if (!e.id) {
+  if (!e.status || !_isValidStatus.call(this, e)) {
     this.errors.push(MUST_HAVE_STATUS);
     return false;
   }
@@ -68,8 +69,17 @@ function _mustHaveStatus(e) {
   return true;
 }
 
+function _isValidStatus(e) {
+  this.log('isValidStatus', { e });
+  return (
+    e.status === EventStatus.ON ||
+    e.status === EventStatus.OFF ||
+    e.status === EventStatus.DISABLED
+  );
+}
+
 function _mustHaveStatementWithStatementProperties(e) {
-  this.log('_mustHaveStatementWithStatementProperties', {e});
+  this.log('_mustHaveStatementWithStatementProperties', { e });
 
   if (!!e.statementProperties.filter((property) => !e.statement[property]).length) {
     this.errors.push(MUST_HAVE_STATEMENT_PROPERTIES);
@@ -80,9 +90,9 @@ function _mustHaveStatementWithStatementProperties(e) {
 }
 
 function _mustHaveCallbackFunction(e) {
-  this.log('_mustHaveCallbackFunction', {e});
+  this.log('_mustHaveCallbackFunction', { e });
 
-  if (!!e && e.toString().call(e.callback) === IS_FUNCTION) {
+  if (!e && Object.prototype.toString.call(e.callback) !== IS_FUNCTION) {
     this.errors.push(MUST_HAVE_CALLBACK);
     return false;
   }

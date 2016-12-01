@@ -1,7 +1,7 @@
-var xAPIEventsConfig;
+let xAPIEventsConfig;
 
 xAPIEventsConfig = {
-  debug: true
+  debug: false
 };
 
 export default xAPIEventsConfig;

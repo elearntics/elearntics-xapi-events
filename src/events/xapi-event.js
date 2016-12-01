@@ -1,13 +1,17 @@
-import {EventStatus} from 'event-status';
-var xapiEvent;
+import { EventStatus } from './event-status';
+let xapiEvent;
 
 xapiEvent = {
-  id:         undefined,
-  callback:   undefined,
-  elementId:  undefined,
-  statement:  undefined,
-  status:     EventStatus.DISABLED,
+  id: undefined,
+  callback: undefined,
+  elementId: undefined,
+  statement: undefined,
+  status: EventStatus.DISABLED,
+  isValid: false,
+  isEnabled() {
+    return status === EventStatus.ON;
+  },
   statementProperties: [],
 };
 
-export default xapiEvent;
+export { xapiEvent };

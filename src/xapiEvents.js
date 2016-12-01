@@ -3,18 +3,20 @@ import logger from './utils/logger';
 import xAPIEventStatement from './xapi/statement';
 import xAPIEventStatementContext from './xapi/statement-context';
 
-import {EventStatus} from './events/event-status';
-import {xapiEventValidator} from './events/xapi-event-validator';
+import { EventStatus } from './events/event-status';
+import { xapiEventValidator } from './events/xapi-event-validator';
 
 import xapiValidator from 'xapiValidator';
 
-var xAPIEvents;
+let xapiEvents;
 
-xAPIEvents = {
-  log:           logger.log,
+xapiEvents = {
+  log: logger.log,
   baseStatement: {},
-  events:        [],
-  LRS:           {},
+  events: [],
+  targetElements: {},
+  errors: [],
+  LRS: {},
 
   init(actor, authority) {
     this.log('init');
@@ -22,8 +24,14 @@ xAPIEvents = {
   },
 
   reset() {
-   this.log('reset');
-   return this.setBaseStatement(this.baseStatement.author, this.baseStatement.authority);
+    this.log('reset');
+    return this.setBaseStatement(this.baseStatement.author, this.baseStatement.authority);
+  },
+
+  getTargetElements() {
+    this.events.forEach((xapiEvent) => {
+      this.targetElements[xapiEvent.elementId] = this.targetElements[xapiEvent.elementId] || document.getElementById(xapiEvent.elementId);
+    });
   },
 
   isValidStatement() {
@@ -35,20 +43,38 @@ xAPIEvents = {
     this.log('setBaseStatement');
 
     return !!actor && !!authority ?
-      _buildBaseStatement.call(this, actor, authority)
-      : false;
+      _buildBaseStatement.call(this, actor, authority) :
+      false;
   },
 
   setStatementConfigInfo() {
     this.log('setStatementConfigInfo');
 
-    return this.baseStatement && this.baseStatement.config ?
-      _buildBaseStatementConfig.call(this)
-      : false;
+    return this.baseStatement ?
+      _buildBaseStatementConfig.call(this) :
+      false;
+  },
+
+  listenEnabledEvents() {
+    this.log('listenEnabledEvents');
+    this.events.forEach((xapiEvent) => {
+      if (xapiEvent.isEnabled()) {
+        this.targetElements[xapiEvent.elementId].addEventListener(xapiEvent.action, xapiEvent.callback);
+      }
+    });
+  },
+
+  stopEnabledEvents() {
+    this.log('stopEnabledEvents');
+    this.events.forEach((xapiEvent) => {
+      if (xapiEvent.isEnabled()) {
+        this.targetElements[xapiEvent.elementId].removeEventListener(xapiEvent.action, xapiEvent.callback);
+      }
+    });
   },
 
   addEvent(eventObj) {
-    this.log('addEvent', {eventObj});
+    this.log('addEvent', { eventObj });
     if (this.isValidEvent(eventObj)) {
       this.events.push(eventObj);
       return true;
@@ -58,29 +84,36 @@ xAPIEvents = {
   },
 
   addEvents(events) {
-    this.log('addEvents', {events});
+    this.log('addEvents', { events });
     events.forEach((eventObj) => {
       this.addEvent(eventObj);
     });
   },
 
   removeEventById(eventId) {
-    this.log('removeEventById', {eventId});
+    this.log('removeEventById', { eventId });
     this.events = this.events.filter((xapiEvent) => xapiEvent.id !== eventId);
   },
 
   removeEventsByElementId(elementId) {
-    this.log('removeEventsByElementId', {elementId});
+    this.log('removeEventsByElementId', { elementId });
     this.events = this.events.filter((xapiEvent) => xapiEvent.elementId !== elementId);
   },
 
   enableEvent(e) {
-    this.log('enableEvent', {e});
+    this.log('enableEvent', { e });
     this.events.forEach((xapiEvent) => {
       if (e.id === xapiEvent.id) {
         xapiEvent.status = EventStatus.ON;
         return;
       }
+    });
+  },
+
+  enableAllEvents() {
+    this.log('enableAllEvents');
+    this.events.forEach((xapiEvent) => {
+      xapiEvent.status = EventStatus.ON;
     });
   },
 
@@ -95,7 +128,7 @@ xAPIEvents = {
   },
 
   enableElementsByElementId(elementId) {
-    this.log('enableElementsByElementId', {elementId});
+    this.log('enableElementsByElementId', { elementId });
     this.events.forEach((xapiEvent) => {
       if (elementId === xapiEvent.elementId) {
         xapiEvent.status = EventStatus.ON;
@@ -104,7 +137,7 @@ xAPIEvents = {
   },
 
   disableEvent(e) {
-    this.log('disableEvent', {e});
+    this.log('disableEvent', { e });
     this.events.forEach((xapiEvent) => {
       if (e.id === xapiEvent.id) {
         xapiEvent.status = EventStatus.OFF;
@@ -113,8 +146,15 @@ xAPIEvents = {
     });
   },
 
+  disableAllEvents() {
+    this.log('disableAllEvents');
+    this.events.forEach((xapiEvent) => {
+      xapiEvent.status = EventStatus.OFF;
+    });
+  },
+
   disableEventById(eventId) {
-    this.log('disableEventById', {eventId});
+    this.log('disableEventById', { eventId });
     this.events.forEach((xapiEvent) => {
       if (eventId === xapiEvent.id) {
         xapiEvent.status = EventStatus.OFF;
@@ -124,7 +164,7 @@ xAPIEvents = {
   },
 
   disableElementsByElementId(elementId) {
-    this.log('disableElementsByElementId', {elementId});
+    this.log('disableElementsByElementId', { elementId });
     this.events.forEach((xapiEvent) => {
       if (elementId === xapiEvent.elementId) {
         xapiEvent.status = EventStatus.OFF;
@@ -133,37 +173,41 @@ xAPIEvents = {
   },
 
   isValidEvent(eventObj) {
-    this.log('isValidEvent', {eventObj});
-    return xapiEventValidator.isValidEvent(eventObj);
+    this.log('isValidEvent', { eventObj });
+    return xapiEventValidator.isValidEvent.call(this, eventObj);
   }
 };
 
-export default xAPIEvents;
+export default xapiEvents;
 
 
 /* Private */
 
 function _buildBaseStatement(actor, authority) {
-  var context;
-  this.log('_buildBaseStatement', {actor, authority});
+  let context;
+  this.log('_buildBaseStatement', { actor, authority });
 
   context = _buildBaseStatementContext.call(this, actor);
-  return Object.assign(this.baseStatement, xAPIEventStatement, {actor, context, authority});
+  return Object.assign(this.baseStatement, xAPIEventStatement, { actor, context, authority });
 }
 
 function _buildBaseStatementConfig() {
+  let baseStatement;
   this.log('_buildBaseStatementConfig');
 
-  return Object.assign(this.baseStatement.config, {
-    platform: navigator ? navigator.userAgent: null,
+  baseStatement = this.baseStatement;
+
+  return {
+    baseStatement,
+    platform: navigator ? navigator.userAgent : null,
     language: navigator ? navigator.language : null
-  });
+  };
 }
 
 function _buildBaseStatementContext(actor) {
-  var instructor;
-  this.log('_getStatementConfigStructure', {actor});
+  let instructor;
+  this.log('_getStatementConfigStructure', { actor });
 
   instructor = actor || null;
-  return Object.assign(xAPIEventStatementContext, {instructor});
+  return Object.assign(xAPIEventStatementContext, { instructor });
 }
