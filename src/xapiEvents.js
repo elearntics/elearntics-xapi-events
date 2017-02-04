@@ -8,7 +8,7 @@ import { xapiEventValidator } from './events/xapi-event-validator';
 import { xapiEvent } from './events/xapi-event';
 import { xapiHelpers } from './events/xapi-helpers';
 
-export let config = {
+export const xapiEvents = {
   log: logger.log,
   baseStatement: {},
   events: [],

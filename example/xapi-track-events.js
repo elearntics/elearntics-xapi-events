@@ -27,7 +27,7 @@ events = [{
   }
 ];
 
-_xapiEvents = xapiEvents.config;
+_xapiEvents = xapiEvents.xapiEvents; // FIXME
 _xapiEvents.addEvents(events);
 _xapiEvents.enableAllEvents();
 _xapiEvents.listenEnabledEvents();

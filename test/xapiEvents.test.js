@@ -1,7 +1,7 @@
 'use strict';
 
 import { assert } from 'chai';
-import xapiEvents from '../src/xapiEvents';
+import { xapiEvents } from '../src/xapiEvents';
 import { EventStatus } from '../src/events/event-status';
 import { xapiEvent } from '../src/events/xapi-event';
 
