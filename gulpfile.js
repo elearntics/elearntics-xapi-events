@@ -19,7 +19,8 @@ const
   BROWSERIFY_TRANSFORM = 'babelify',
   BROWSERIFY_CONFIG = Object.freeze({
     debug: true,
-    json: true
+    json: true,
+    standalone: 'xapiEvents'
   }),
   DIST_FILENAME      = 'xapi-events.js',
   DIST_FILENAME_MIN  = 'xapi-events.min.js',

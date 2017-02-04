@@ -5,13 +5,11 @@ xapiEvent = {
   id: undefined,
   callback: undefined,
   name: undefined,
-  elementId: undefined,
+  elementSelectors: [],
+  targetElements: [],
   statement: undefined,
   status: EventStatus.DISABLED,
   isValid: false,
-  isEnabled() {
-    return status === EventStatus.ON;
-  },
   statementProperties: [],
 };
 

@@ -22,7 +22,6 @@ describe('xapiEvents library', () => {
     assert.ok(xapiEvents.baseStatement, 'it should have the "baseStatement" property defined');
     assert.ok(xapiEvents.events, 'it should have the "events" property defined');
     assert.notOk(xapiEvents.events.length, 'it should have the "events" array empty at the beginning');
-    assert.notOk(xapiEvents.isValidStatement(xapiEvents.statement), 'it should build a non valid statement at the beginning');
   });
 
   it('should be able to check if an event is invalid', () => {

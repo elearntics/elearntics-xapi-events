@@ -5,18 +5,17 @@ import xAPIEventStatementContext from './xapi/statement-context';
 
 import { EventStatus } from './events/event-status';
 import { xapiEventValidator } from './events/xapi-event-validator';
+import { xapiEvent } from './events/xapi-event';
+import { xapiHelpers } from './events/xapi-helpers';
 
-import xapiValidator from 'xapiValidator';
-
-let xapiEvents;
-
-xapiEvents = {
+export let config = {
   log: logger.log,
   baseStatement: {},
   events: [],
-  targetElements: {},
   errors: [],
+  targetElements: [],
   LRS: {},
+  helpers: xapiHelpers,
 
   init(actor, authority) {
     this.log('init');
@@ -29,14 +28,19 @@ xapiEvents = {
   },
 
   getTargetElements() {
+    this.log('getTargetElements');
     this.events.forEach((xapiEvent) => {
-      this.targetElements[xapiEvent.elementId] = this.targetElements[xapiEvent.elementId] || document.getElementById(xapiEvent.elementId);
+      xapiEvent.elementSelectors.forEach((elementSelector) => {
+        this.log('elementSelector', elementSelector);
+        let elements = document.querySelectorAll(elementSelector);
+        if (elements.length) {
+          elements.forEach((element) => {
+            this.log('elements', element);
+            this.targetElements.push(element);
+          });
+        }
+      });
     });
-  },
-
-  isValidStatement() {
-    this.log('isValidStatement', this.baseStatement);
-    return !xapiValidator.validateStatement(this.baseStatement).errors.length;
   },
 
   setBaseStatement(actor, authority) {
@@ -58,9 +62,14 @@ xapiEvents = {
   listenEnabledEvents() {
     this.log('listenEnabledEvents');
     this.events.forEach((xapiEvent) => {
-      if (xapiEvent.isEnabled()) {
-        this.targetElements[xapiEvent.elementId]
-          .addEventListener(xapiEvent.action, xapiEvent.callback);
+      this.log('xapiEvent', xapiEvent);
+      if (_isEnabled.call(this, xapiEvent)) {
+        this.targetElements.forEach((targetElement) => {
+          this.log('targetElement', targetElement);
+          targetElement.addEventListener(xapiEvent.name, (_event) => {
+            xapiEvent.callback.call(this, _event, xapiEvent);
+          }, false);
+        });
       }
     });
   },
@@ -68,16 +77,19 @@ xapiEvents = {
   stopEnabledEvents() {
     this.log('stopEnabledEvents');
     this.events.forEach((xapiEvent) => {
-      if (xapiEvent.isEnabled()) {
-        this.targetElements[xapiEvent.elementId]
-          .removeEventListener(xapiEvent.action, xapiEvent.callback);
+      if (_isEnabled.call(this, xapiEvent)) {
+        this.targetElements.forEach((targetElement) => {
+          targetElement.removeEventListener(xapiEvent.name);
+        });
       }
     });
   },
 
   addEvent(eventObj) {
     this.log('addEvent', { eventObj });
+
     if (this.isValidEvent(eventObj)) {
+      eventObj = Object.assign(xapiEvent, eventObj);
       this.events.push(eventObj);
       return true;
     }
@@ -87,9 +99,12 @@ xapiEvents = {
 
   addEvents(events) {
     this.log('addEvents', { events });
-    events.forEach((eventObj) => {
-      this.addEvent(eventObj);
+
+    events.forEach((_event) => {
+      this.addEvent(_event);
     });
+
+    this.getTargetElements();
   },
 
   removeEventById(eventId) {
@@ -180,8 +195,6 @@ xapiEvents = {
   }
 };
 
-export default xapiEvents;
-
 
 /* Private */
 
@@ -212,4 +225,9 @@ function _buildBaseStatementContext(actor) {
 
   instructor = actor || null;
   return Object.assign(xAPIEventStatementContext, { instructor });
+}
+
+function _isEnabled(xapiEvent) {
+  this.log('_isEnabled', xapiEvent.status);
+  return xapiEvent.status === EventStatus.ON;
 }

@@ -31,10 +31,9 @@ function _validateEvent(e) {
   _mustHaveUniqueId.call(this, e);
   _mustHaveName.call(this, e);
   _mustHaveStatus.call(this, e);
-  _mustHaveStatementWithStatementProperties.call(this, e);
   _mustHaveCallbackFunction.call(this, e);
 
-  this.errors ? this.log(NOT_VALID, { e, errors: this.errors }) : this.log(VALID);
+  this.errors.length ? this.log(NOT_VALID, { e, errors: this.errors }) : this.log(VALID);
   return this;
 }
 
