@@ -29,6 +29,7 @@ function _validateEvent(e) {
 
   _mustHaveId.call(this, e);
   _mustHaveUniqueId.call(this, e);
+  _mustHaveName.call(this, e);
   _mustHaveStatus.call(this, e);
   _mustHaveStatementWithStatementProperties.call(this, e);
   _mustHaveCallbackFunction.call(this, e);
@@ -55,6 +56,18 @@ function _mustHaveUniqueId(e) {
     this.errors.push(MUST_HAVE_UNIQUE_ID);
     return false;
   }
+  return true;
+}
+
+
+function _mustHaveName(e) {
+  this.log('_mustHaveName', { e });
+
+  if (!e.name) {
+    this.errors.push(MUST_HAVE_ID);
+    return false;
+  }
+
   return true;
 }
 

@@ -59,7 +59,8 @@ xapiEvents = {
     this.log('listenEnabledEvents');
     this.events.forEach((xapiEvent) => {
       if (xapiEvent.isEnabled()) {
-        this.targetElements[xapiEvent.elementId].addEventListener(xapiEvent.action, xapiEvent.callback);
+        this.targetElements[xapiEvent.elementId]
+          .addEventListener(xapiEvent.action, xapiEvent.callback);
       }
     });
   },
@@ -68,7 +69,8 @@ xapiEvents = {
     this.log('stopEnabledEvents');
     this.events.forEach((xapiEvent) => {
       if (xapiEvent.isEnabled()) {
-        this.targetElements[xapiEvent.elementId].removeEventListener(xapiEvent.action, xapiEvent.callback);
+        this.targetElements[xapiEvent.elementId]
+          .removeEventListener(xapiEvent.action, xapiEvent.callback);
       }
     });
   },
@@ -100,10 +102,10 @@ xapiEvents = {
     this.events = this.events.filter((xapiEvent) => xapiEvent.elementId !== elementId);
   },
 
-  enableEvent(e) {
-    this.log('enableEvent', { e });
+  enableEvent(_event) {
+    this.log('enableEvent', { _event });
     this.events.forEach((xapiEvent) => {
-      if (e.id === xapiEvent.id) {
+      if (_event.id === xapiEvent.id) {
         xapiEvent.status = EventStatus.ON;
         return;
       }
@@ -136,10 +138,10 @@ xapiEvents = {
     });
   },
 
-  disableEvent(e) {
-    this.log('disableEvent', { e });
+  disableEvent(_event) {
+    this.log('disableEvent', { _event });
     this.events.forEach((xapiEvent) => {
-      if (e.id === xapiEvent.id) {
+      if (_event.id === xapiEvent.id) {
         xapiEvent.status = EventStatus.OFF;
         return;
       }
@@ -172,9 +174,9 @@ xapiEvents = {
     });
   },
 
-  isValidEvent(eventObj) {
-    this.log('isValidEvent', { eventObj });
-    return xapiEventValidator.isValidEvent.call(this, eventObj);
+  isValidEvent(_event) {
+    this.log('isValidEvent', { _event });
+    return xapiEventValidator.isValidEvent.call(this, _event);
   }
 };
 

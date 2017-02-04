@@ -4,6 +4,7 @@ let xapiEvent;
 xapiEvent = {
   id: undefined,
   callback: undefined,
+  name: undefined,
   elementId: undefined,
   statement: undefined,
   status: EventStatus.DISABLED,

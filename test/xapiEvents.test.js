@@ -50,8 +50,13 @@ describe('xapiEvents library', () => {
     assert.notOk(xapiEvents.isValidEvent(invalidEvent), 'it should return that the event is not valid [callback]');
     assert.ok(xapiEvents.errors.length, `it should have stored the errors: ${xapiEvents.errors}`);
 
-    validEvent = Object.assign({}, xapiEvent, { id: 'event-id', callback: callbackFunction });
+    invalidEvent = Object.assign({}, xapiEvent, { id: 'event-id', callback: callbackFunction });
+    console.log('invalid', invalidEvent);
+    assert.notOk(xapiEvents.isValidEvent(invalidEvent), 'it should return that the event is not valid');
+    assert.ok(xapiEvents.errors.length, `it should have stored the errors: ${xapiEvents.errors}`);
+
+    validEvent = Object.assign({}, xapiEvent, { id: 'event-id', name: 'click', callback: callbackFunction });
     assert.ok(xapiEvents.isValidEvent(validEvent), 'it should return that the event is valid');
-    assert.notOk(validEvent.errors, `it should have stored the errors: ${validEvent.errors}`);
+    assert.notOk(xapiEvents.errors.length, `it should not have stored the errors: ${xapiEvents.errors}`);
   });
 });
