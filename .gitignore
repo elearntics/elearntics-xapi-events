@@ -1,5 +1,5 @@
 .DS_Store
 node_modules
 bower_components
-dist/
-dist-test/
+dist/xapi-events-min.js
+dist/maps
