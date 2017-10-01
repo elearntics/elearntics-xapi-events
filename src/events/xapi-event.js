@@ -1,7 +1,6 @@
 import { EventStatus } from './event-status';
-let xapiEvent;
 
-xapiEvent = {
+export const xapiEvent = {
   id: undefined,
   callback: undefined,
   name: undefined,
@@ -9,8 +8,5 @@ xapiEvent = {
   targetElements: [],
   statement: undefined,
   status: EventStatus.DISABLED,
-  isValid: false,
-  statementProperties: [],
+  isValid: false
 };
-
-export { xapiEvent };

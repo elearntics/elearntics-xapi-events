@@ -1,9 +1,5 @@
-let xapiHelpers;
-
-xapiHelpers = {
+export const xapiHelpers = {
   getSelection() {
     return window.getSelection().toString();
   }
 };
-
-export { xapiHelpers };

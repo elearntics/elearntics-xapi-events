@@ -12,7 +12,7 @@ events = [{
     elementSelectors: ['.english-texts'],
     isValid:        false,
     status:         'OFF',
-    statementProperties: [{
+    statement: [{
       actor:       'elenatorro@email.com',
       verb:        'selected',
       object:      undefined,
@@ -27,7 +27,7 @@ events = [{
   }
 ];
 
-_xapiEvents = xapiEvents.xapiEvents; // FIXME
+_xapiEvents = xapiEvents; // FIXME
 _xapiEvents.addEvents(events);
 _xapiEvents.enableAllEvents();
 _xapiEvents.listenEnabledEvents();

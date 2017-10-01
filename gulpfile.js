@@ -1,17 +1,15 @@
 'use strict';
 
-let
-  browserify  = require('browserify'),
-  buffer      = require('vinyl-buffer'),
-  connect     = require('gulp-connect'),
-  gulp        = require('gulp'),
-  livereload  = require('gulp-livereload'),
-  source      = require('vinyl-source-stream'),
-  sourcemaps  = require('gulp-sourcemaps'),
-  uglify      = require('gulp-uglify')
-;
+const  browserify  = require('browserify');
+const  buffer      = require('vinyl-buffer');
+const  connect     = require('gulp-connect');
+const  gulp        = require('gulp');
+const  livereload  = require('gulp-livereload');
+const  source      = require('vinyl-source-stream');
+const  sourcemaps  = require('gulp-sourcemaps');
+const  uglify      = require('gulp-uglify');
 
-/* Config */
+
 const
   BABEL_CONFIG = Object.freeze({
     presets: ['es2015']

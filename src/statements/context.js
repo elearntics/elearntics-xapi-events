@@ -1,6 +1,4 @@
-let xAPIEventStatementContext;
-
-xAPIEventStatementContext = {
+export const xAPIEventStatementContext = {
   registration: undefined,
   instructor: undefined,
   team: undefined,
@@ -11,5 +9,3 @@ xAPIEventStatementContext = {
   statement: undefined,
   extensions: undefined
 };
-
-export default xAPIEventStatementContext;

@@ -1,8 +1,6 @@
-import xAPIEventsConfig from '../config';
+import { xAPIEventsConfig } from '../config';
 
-let logger;
-
-logger = {
+export const logger = {
   debug: xAPIEventsConfig.debug,
   log(...message) {
     if (!xAPIEventsConfig.debug) { return false; }
@@ -14,5 +12,3 @@ logger = {
     }
   }
 };
-
-export default logger;

@@ -1,6 +1,4 @@
-let xAPIEventStatement;
-
-xAPIEventStatement = {
+export const xAPIEventStatement = {
   actor: undefined,
   verb: undefined,
   object: undefined,
@@ -12,5 +10,3 @@ xAPIEventStatement = {
   version: undefined,
   attachments: undefined
 };
-
-export default xAPIEventStatement;

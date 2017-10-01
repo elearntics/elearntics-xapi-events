@@ -1,46 +1,41 @@
 import { EventStatus } from './event-status';
 
-const
-  IS_FUNCTION = '[object Function]',
-  MUST_HAVE_ID = 'Must have an id',
-  MUST_HAVE_UNIQUE_ID = 'Must have a unique id',
-  MUST_HAVE_STATUS = 'Must have a status',
-  MUST_HAVE_STATEMENT_PROPERTIES = 'Must have a statement with the required statement properties',
-  MUST_HAVE_CALLBACK = 'Must have a correct callback function',
-  NOT_VALID = 'Not valid event:',
-  VALID = 'Valid event';
+const  IS_FUNCTION = '[object Function]';
+const  MUST_HAVE_ID = 'Must have an id';
+const  MUST_HAVE_UNIQUE_ID = 'Must have a unique id';
+const  MUST_HAVE_STATUS = 'Must have a status';
+const  MUST_HAVE_CALLBACK = 'Must have a correct callback function';
+const  NOT_VALID = 'Not valid event:';
+const  VALID = 'Valid event';
 
-let xapiEventValidator;
-
-xapiEventValidator = {
+export const xapiEventValidator = {
   isValidEvent(e) {
     this.log('isValidEvent', { e });
-    return !_validateEvent.call(this, e).errors.length;
+    return !_hasErrors.call(this, e).errors.length;
   }
 };
 
-export { xapiEventValidator };
-
-/* Private */
-
-function _validateEvent(e) {
-  this.log('validateEvent', { e });
+function _hasErrors(xapiEvent) {
+  this.log('validateEvent', { xapiEvent });
   this.errors = [];
 
-  _mustHaveId.call(this, e);
-  _mustHaveUniqueId.call(this, e);
-  _mustHaveName.call(this, e);
-  _mustHaveStatus.call(this, e);
-  _mustHaveCallbackFunction.call(this, e);
+  _mustHaveId.call(this, xapiEvent);
+  _mustHaveUniqueId.call(this, xapiEvent);
+  _mustHaveName.call(this, xapiEvent);
+  _mustHaveStatus.call(this, xapiEvent);
+  _mustHaveCallbackFunction.call(this, xapiEvent);
 
-  this.errors.length ? this.log(NOT_VALID, { e, errors: this.errors }) : this.log(VALID);
+  this.errors.length
+    ? this.log(NOT_VALID, { event: xapiEvent, errors: this.errors })
+    : this.log(VALID);
+
   return this;
 }
 
-function _mustHaveId(e) {
-  this.log('_mustHaveId', { e });
+function _mustHaveId(xapiEvent) {
+  this.log('_mustHaveId', { xapiEvent });
 
-  if (!e.id) {
+  if (!xapiEvent.id) {
     this.errors.push(MUST_HAVE_ID);
     return false;
   }
@@ -48,21 +43,22 @@ function _mustHaveId(e) {
   return true;
 }
 
-function _mustHaveUniqueId(e) {
-  this.log('_mustHaveUniqueId', { e });
+function _mustHaveUniqueId(xapiEvent) {
+  this.log('_mustHaveUniqueId', { xapiEvent });
+  if (!!this.events.length &&
+    !!this.events.filter((xapiEvent) => xapiEvent.id === xapiEvent.id).length) {
 
-  if (!!this.events.length || !!this.events.filter((xapiEvent) => xapiEvent.id === e.id).length) {
     this.errors.push(MUST_HAVE_UNIQUE_ID);
     return false;
   }
+
   return true;
 }
 
+function _mustHaveName(xapiEvent) {
+  this.log('_mustHaveName', { xapiEvent });
 
-function _mustHaveName(e) {
-  this.log('_mustHaveName', { e });
-
-  if (!e.name) {
+  if (!xapiEvent.name) {
     this.errors.push(MUST_HAVE_ID);
     return false;
   }
@@ -70,10 +66,10 @@ function _mustHaveName(e) {
   return true;
 }
 
-function _mustHaveStatus(e) {
-  this.log('_mustHaveStatus', { e });
+function _mustHaveStatus(xapiEvent) {
+  this.log('_mustHaveStatus', { xapiEvent });
 
-  if (!e.status || !_isValidStatus.call(this, e)) {
+  if (!xapiEvent.status || !_isValidStatus.call(this, xapiEvent)) {
     this.errors.push(MUST_HAVE_STATUS);
     return false;
   }
@@ -81,30 +77,20 @@ function _mustHaveStatus(e) {
   return true;
 }
 
-function _isValidStatus(e) {
-  this.log('isValidStatus', { e });
+function _isValidStatus(xapiEvent) {
+  this.log('isValidStatus', { xapiEvent });
   return (
-    e.status === EventStatus.ON ||
-    e.status === EventStatus.OFF ||
-    e.status === EventStatus.DISABLED
+    xapiEvent.status === EventStatus.ON ||
+    xapiEvent.status === EventStatus.OFF ||
+    xapiEvent.status === EventStatus.DISABLED
   );
 }
 
-function _mustHaveStatementWithStatementProperties(e) {
-  this.log('_mustHaveStatementWithStatementProperties', { e });
+function _mustHaveCallbackFunction(xapiEvent) {
+  this.log('_mustHaveCallbackFunction', { xapiEvent });
 
-  if (!!e.statementProperties.filter((property) => !e.statement[property]).length) {
-    this.errors.push(MUST_HAVE_STATEMENT_PROPERTIES);
-    return false;
-  }
-
-  return true;
-}
-
-function _mustHaveCallbackFunction(e) {
-  this.log('_mustHaveCallbackFunction', { e });
-
-  if (!e && Object.prototype.toString.call(e.callback) !== IS_FUNCTION) {
+  if (!xapiEvent &&
+    Object.prototype.toString.call(xapiEvent.callback) !== IS_FUNCTION) {
     this.errors.push(MUST_HAVE_CALLBACK);
     return false;
   }

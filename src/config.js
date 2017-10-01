@@ -1,7 +1,3 @@
-let xAPIEventsConfig;
-
-xAPIEventsConfig = {
+export const xAPIEventsConfig = {
   debug: false
 };
-
-export default xAPIEventsConfig;
