@@ -82,10 +82,11 @@ export const listenEnabledEvents = function() {
 
 export const stopEnabledEvents = function() {
   this.log('stopEnabledEvents');
+
   this.events.forEach((xapiEvent) => {
     if (_isEnabled.call(this, xapiEvent)) {
       this.targetElements.forEach((targetElement) => {
-        targetElement.removeEventListener(xapiEvent.name);
+        targetElement.removeEventListener(xapiEvent.name, true);
       });
     }
   });
