@@ -1,5 +1,3 @@
-'use strict';
-
 import { assert } from 'chai';
 import { xapiEvents } from '../src/xapiEvents';
 import { EventStatus } from '../src/events/event-status';
@@ -50,7 +48,6 @@ describe('xapiEvents library', () => {
     assert.ok(xapiEvents.errors.length, `it should have stored the errors: ${xapiEvents.errors}`);
 
     invalidEvent = Object.assign({}, xapiEvent, { id: 'event-id', callback: callbackFunction });
-    console.log('invalid', invalidEvent);
     assert.notOk(xapiEvents.isValidEvent(invalidEvent), 'it should return that the event is not valid');
     assert.ok(xapiEvents.errors.length, `it should have stored the errors: ${xapiEvents.errors}`);
 
