@@ -1,3 +1,7 @@
-export const xAPIEventsConfig = {
+const config = {
   debug: false
+};
+
+export {
+  config
 };

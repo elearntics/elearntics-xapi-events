@@ -1,20 +1,14 @@
 import { logger } from './utils/logger';
-
-import { xAPIEventStatement } from './statements/structure';
-import { xAPIEventStatementContext } from './statements/context';
-
-import { EventStatus } from './events/event-status';
-import { xapiEventValidator } from './events/xapi-event-validator';
-import { xapiEvent } from './events/xapi-event';
-import { xapiHelpers } from './events/xapi-helpers';
+import { xapiEventDefault, xapiEventStatus } from 'xapiEvent';
+import { xapiStatementDefault, xapiStatementContext } from 'xapiStatements';
+import { xapiEventValidator } from 'xapiEventValidator';
+import { Observable} from 'rxjs/Observable';
 
 export const log = logger.log;
 export const baseStatement = {};
-export const events = [];
+export const xapiEvents = [];
 export const errors = [];
-export const targetElements = [];
-export const LRS = {};
-export const helpers = xapiHelpers;
+export const targetElements = {};
 
 export const init = function(actor, authority) {
   this.log('init');
@@ -29,15 +23,21 @@ export const reset = function() {
 export const getTargetElements = function() {
   this.log('getTargetElements');
 
-  this.events.forEach((xapiEvent) => {
+  this.xapiEvents.forEach((xapiEvent) => {
     xapiEvent.elementSelectors.forEach((elementSelector) => {
       this.log('elementSelector', elementSelector);
       let elements = document.querySelectorAll(elementSelector);
 
       if (elements.length) {
+        this.targetElements[elementSelector] = this.targetElements[elementSelector] && this.targetElements[elementSelector].length
+          ? this.targetElements[elementSelector]
+          : {
+            elements: [],
+            subscriptions: []
+          };
+
         elements.forEach((element) => {
-          this.log('elements', element);
-          this.targetElements.push(element);
+          this.targetElements[elementSelector].elements.push(element);
         });
       }
     });
@@ -47,33 +47,32 @@ export const getTargetElements = function() {
 export const setBaseStatement = function(actor, authority) {
   this.log('setBaseStatement');
 
-  return !!actor && !!authority ?
-    _buildBaseStatement.call(this, actor, authority) :
-    false;
+  return !!actor && !!authority
+    ? _buildBaseStatement.call(this, actor, authority)
+    : false;
 };
 
 export const setStatementConfigInfo = function() {
   this.log('setStatementConfigInfo');
 
-  return this.baseStatement ?
-    _buildBaseStatementConfig.call(this) :
-    false;
+  return this.baseStatement
+    ? _buildBaseStatementConfig.call(this)
+    : false;
 };
 
 export const listenEnabledEvents = function() {
   this.log('listenEnabledEvents');
 
-  this.events.forEach((xapiEvent) => {
+  this.xapiEvents.forEach((xapiEvent) => {
     this.log('xapiEvent', xapiEvent);
-    if (_isEnabled.call(this, xapiEvent)) {
-      const targetElements = document.querySelectorAll(xapiEvent.elementSelectors);
 
-      targetElements.forEach((targetElement) => {
-        if (targetElement) {
-          this.log('targetElement', targetElement);
-          targetElement.addEventListener(xapiEvent.name, (_event) => {
-            xapiEvent.callback.call(this, _event, xapiEvent);
-          }, false);
+    if (_isEnabled.call(this, xapiEvent)) {
+      xapiEvent.elementSelectors.forEach((elementSelector) => {
+        const targetElements = this.targetElements[elementSelector];
+        if (targetElements.elements.length) {
+          const subscription = Observable.fromEvent(targetElements.elements, xapiEvent.name);
+          subscription.subscribe((e) => xapiEvent.callback.call(this, e, xapiEvent));
+          this.targetElements[elementsSelector].subscriptions.push(subscription);
         }
       });
     }
@@ -83,52 +82,63 @@ export const listenEnabledEvents = function() {
 export const stopEnabledEvents = function() {
   this.log('stopEnabledEvents');
 
-  this.events.forEach((xapiEvent) => {
-    if (_isEnabled.call(this, xapiEvent)) {
-      this.targetElements.forEach((targetElement) => {
-        targetElement.removeEventListener(xapiEvent.name, true);
-      });
-    }
+  this.xapiEvents.forEach((xapiEvent) => {
+    xapiEvent.elementSelectors.forEach((elementSelector) => {
+      if (_isEnabled.call(this, xapiEvent)) {
+        let subscriptions = this.targetElements[elementSelector].subscriptions;
+
+        if (subscriptions.length) {
+          subscriptions.forEach((subscription) => {
+            subscription.unsubscribe();
+          });
+
+          this.targetElements[elementSelector].subscriptions = [];
+        }
+      }
+    });
   });
 };
 
-export const addEvent = function(eventObj) {
-  this.log('addEvent', { eventObj });
+export const addEvent = function(xapiEvent) {
+  this.log('addEvent', { xapiEvent });
 
-  if (this.isValidEvent(eventObj)) {
-    const event = Object.assign({}, xapiEvent, eventObj);
-    this.events.push(event);
+  if (this.isValidEvent(xapiEvent)) {
+    this.xapiEvents.push({
+      ...xapiEvent,
+      ...xapiEventDefault
+    });
+
     return true;
   }
 
   return false;
 };
 
-export const addEvents = function(events) {
-  this.log('addEvents', { events });
+export const addEvents = function(xapiEvents) {
+  this.log('addEvents', { xapiEvents });
 
-  events.forEach((_event) => {
-    this.addEvent(_event);
+  xapiEvents.forEach((e) => {
+    this.addEvent(e);
   });
 
   this.getTargetElements();
 };
 
-export const removeEventById = function(eventId) {
-  this.log('removeEventById', { eventId });
-  this.events = this.events.filter((xapiEvent) => xapiEvent.id !== eventId);
+export const removeEventById = function(id) {
+  this.log('removeEventById', { id });
+  this.xapiEvents = this.xapiEvents.filter((xapiEvent) => xapiEvent.id !== id);
 };
 
-export const removeEventsByElementId = function(elementId) {
-  this.log('removeEventsByElementId', { elementId });
-  this.events = this.events.filter((xapiEvent) => xapiEvent.elementId !== elementId);
+export const removeEventsByElementId = function(id) {
+  this.log('removeEventsByElementId', { id });
+  this.xapiEvents = this.xapiEvents.filter((xapiEvent) => xapiEvent.elementId !== id);
 };
 
-export const enableEvent = function(_event) {
-  this.log('enableEvent', { _event });
-  this.events.forEach((xapiEvent) => {
-    if (_event.id === xapiEvent.id) {
-      xapiEvent.status = EventStatus.ON;
+export const enableEvent = function(e) {
+  this.log('enableEvent', { e });
+  this.xapiEvents.forEach((xapiEvent) => {
+    if (e.id === xapiEvent.id) {
+      xapiEvent.status = xapiEventStatus.ON;
       return;
     }
   });
@@ -136,16 +146,16 @@ export const enableEvent = function(_event) {
 
 export const enableAllEvents = function() {
   this.log('enableAllEvents');
-  this.events.forEach((xapiEvent) => {
-    xapiEvent.status = EventStatus.ON;
+  this.xapiEvents.forEach((xapiEvent) => {
+    xapiEvent.status = xapiEventStatus.ON;
   });
 };
 
-export const enableEventById = function(eventId) {
+export const enableEventById = function(id) {
   this.log('enableEventById');
-  this.events.forEach((xapiEvent) => {
-    if (eventId === xapiEvent.id) {
-      xapiEvent.status = EventStatus.ON;
+  this.xapiEvents.forEach((xapiEvent) => {
+    if (id === xapiEvent.id) {
+      xapiEvent.status = xapiEventStatus.ON;
       return;
     }
   });
@@ -153,18 +163,18 @@ export const enableEventById = function(eventId) {
 
 export const enableElementsByElementId = function(elementId) {
   this.log('enableElementsByElementId', { elementId });
-  this.events.forEach((xapiEvent) => {
+  this.xapiEvents.forEach((xapiEvent) => {
     if (elementId === xapiEvent.elementId) {
-      xapiEvent.status = EventStatus.ON;
+      xapiEvent.status = xapiEventStatus.ON;
     }
   });
 };
 
-export const disableEvent = function(_event) {
-  this.log('disableEvent', { _event });
-  this.events.forEach((xapiEvent) => {
-    if (_event.id === xapiEvent.id) {
-      xapiEvent.status = EventStatus.OFF;
+export const disableEvent = function(e) {
+  this.log('disableEvent', { e });
+  this.xapiEvents.forEach((xapiEvent) => {
+    if (e.id === xapiEvent.id) {
+      xapiEvent.status = xapiEventStatus.OFF;
       return;
     }
   });
@@ -172,33 +182,33 @@ export const disableEvent = function(_event) {
 
 export const disableAllEvents = function() {
   this.log('disableAllEvents');
-  this.events.forEach((xapiEvent) => {
-    xapiEvent.status = EventStatus.OFF;
+  this.xapiEvents.forEach((xapiEvent) => {
+    xapiEvent.status = xapiEventStatus.OFF;
   });
 };
 
-export const disableEventById = function(eventId) {
-  this.log('disableEventById', { eventId });
-  this.events.forEach((xapiEvent) => {
-    if (eventId === xapiEvent.id) {
-      xapiEvent.status = EventStatus.OFF;
+export const disableEventById = function(id) {
+  this.log('disableEventById', { id });
+  this.xapiEvents.forEach((xapiEvent) => {
+    if (id === xapiEvent.id) {
+      xapiEvent.status = xapiEventStatus.OFF;
       return;
     }
   });
 };
 
-export const disableElementsByElementId = function(elementId) {
-  this.log('disableElementsByElementId', { elementId });
-  this.events.forEach((xapiEvent) => {
-    if (elementId === xapiEvent.elementId) {
-      xapiEvent.status = EventStatus.OFF;
+export const disableElementsByElementId = function(id) {
+  this.log('disableElementsByElementId', { id });
+  this.xapiEvents.forEach((xapiEvent) => {
+    if (id === xapiEvent.elementId) {
+      xapiEvent.status = xapiEventStatus.OFF;
     }
   });
 };
 
-export const isValidEvent = function(_event) {
-  this.log('isValidEvent', { _event });
-  return xapiEventValidator.isValidEvent.call(this, _event);
+export const isValidEvent = function(e) {
+  this.log('isValidEvent', { e });
+  return xapiEventValidator.isValidEvent.call(this, e);
 };
 
 function _buildBaseStatement(actor, authority) {
@@ -206,7 +216,7 @@ function _buildBaseStatement(actor, authority) {
   this.log('_buildBaseStatement', { actor, authority });
 
   context = _buildBaseStatementContext.call(this, actor);
-  return Object.assign(this.baseStatement, xAPIEventStatement, { actor, context, authority });
+  return Object.assign(this.baseStatement, xapiStatementDefault, { actor, context, authority });
 }
 
 function _buildBaseStatementConfig() {
@@ -227,10 +237,10 @@ function _buildBaseStatementContext(actor) {
   this.log('_getStatementConfigStructure', { actor });
 
   instructor = actor || null;
-  return Object.assign(xAPIEventStatementContext, { instructor });
+  return Object.assign(xapiStatementContext, { instructor });
 }
 
 function _isEnabled(xapiEvent) {
   this.log('_isEnabled', xapiEvent.status);
-  return xapiEvent.status === EventStatus.ON;
+  return xapiEventDefault.status === xapiEventStatus.ON;
 }
