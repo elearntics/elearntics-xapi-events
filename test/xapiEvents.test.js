@@ -3,11 +3,11 @@ import * as xapiEvents from '../src/index';
 import EventStatus from '../src/xapi-events/status';
 import xapiEvent from '../src/xapi-events/default';
 
-let
-  actor = {
-    mbox: 'mailto:fakestudent@mail.com'
-  },
-  authority = {};
+let actor = {
+  mbox: 'mailto:fakestudent@mail.com'
+};
+
+let authority = {};
 
 describe('xapiEvents library', () => {
   it('should be defined', () => {
@@ -16,8 +16,6 @@ describe('xapiEvents library', () => {
 
   it('should be able to set the default info', () => {
     xapiEvents.init(actor, authority);
-
-    console.log(xapiEvents);
 
     assert.ok(xapiEvents.baseStatement, 'it should have the "baseStatement" property defined');
     assert.ok(xapiEvents.xapiEvents, 'it should have the "events" property defined');
