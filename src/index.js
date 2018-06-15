@@ -4,6 +4,7 @@ import xapiEventStatus from './xapi-events/status';
 import xapiEventValidator from './xapi-events/validator';
 import xapiStatementDefault from './xapi-statements/default';
 import xapiStatementContext from './xapi-statements/context';
+import xapiLrsMiddleware from './xapi-lrs/middleware';
 
 import { Observable } from 'rxjs';
 
@@ -206,10 +207,21 @@ export const disableElementsByElementId = function(id) {
   });
 };
 
+export const getDefaultEvent = function () {
+  return Object.assign({}, xapiEventDefault);
+};
+
 export const isValidEvent = function(e) {
   this.log('isValidEvent', { e });
   return xapiEventValidator.isValidEvent.call(this, e);
 };
+
+export const send = function (statement) {
+  return xapiLrsMiddleware.connect.post(statement);
+};
+
+
+/* Private */
 
 function _buildBaseStatement(actor, authority) {
   let context;
@@ -242,5 +254,5 @@ function _buildBaseStatementContext(actor) {
 
 function _isEnabled(xapiEvent) {
   this.log('_isEnabled', xapiEvent.status);
-  return xapiEventDefault.status === xapiEventStatus.ON;
+  return xapiEvent.status === xapiEventStatus.ON;
 }
