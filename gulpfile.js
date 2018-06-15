@@ -9,7 +9,6 @@ const source      = require('vinyl-source-stream');
 const sourcemaps  = require('gulp-sourcemaps');
 const uglify      = require('gulp-uglify');
 
-
 const
   BABEL_CONFIG = Object.freeze({
     presets: ['es2015']
@@ -24,7 +23,7 @@ const
   DIST_FILENAME_MIN  = 'xapi-events.min.js',
   DIST_PATH          = 'dist',
   MAPS_PATH          = './maps',
-  SRC_FILE           = 'src/xapiEvents.js',
+  SRC_FILE           = 'src/index.js',
   WATCH_FILES        = ['src/*.js', 'src/**/*.js', 'test/*.js', 'test/**/*.js']
 ;
 

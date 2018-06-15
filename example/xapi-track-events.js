@@ -1,19 +1,16 @@
-var _xapiEvents, events, logEvent;
-
-logEvent = function(_event, xapiEvent) {
+var logEvent = function logEvent(_event, xapiEvent) {
   console.log('xAPI Event', _event, xapiEvent);
-  console.log('selection', _xapiEvents.helpers.getSelection());
 };
 
-events = [{
+var events = [{
     id:             'select-text',
     callback:       logEvent,
     name:           'mouseup',
-    elementSelectors: ['.english-texts'],
+    elementSelectors: ['.text'],
     isValid:        false,
     status:         'OFF',
     statement: [{
-      actor:       'elenatorro@email.com',
+      actor:       'actor@email.com',
       verb:        'selected',
       object:      undefined,
       result:      undefined,
@@ -27,8 +24,7 @@ events = [{
   }
 ];
 
-_xapiEvents = xapiEvents; // FIXME
-_xapiEvents.addEvents(events);
-_xapiEvents.enableAllEvents();
-_xapiEvents.listenEnabledEvents();
-_xapiEvents.init('elenatorro@email.com', 'xapiEvents-Example');
+xapiEvents.addEvents(events);
+xapiEvents.enableAllEvents();
+xapiEvents.listenEnabledEvents();
+xapiEvents.init('actor@email.com', 'xapiEvents-Example');

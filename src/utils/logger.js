@@ -1,6 +1,6 @@
-import { config } from '../config';
+import config from '../config';
 
-const logger = {
+export default {
   debug: config.debug,
 
   log(...message) {
@@ -12,8 +12,4 @@ const logger = {
       return false;
     }
   }
-};
-
-export {
-  logger
 };

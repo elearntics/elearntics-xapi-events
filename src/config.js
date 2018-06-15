@@ -1,7 +1,3 @@
-const config = {
+export default {
   debug: false
-};
-
-export {
-  config
 };

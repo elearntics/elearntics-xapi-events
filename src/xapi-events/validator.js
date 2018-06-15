@@ -1,4 +1,4 @@
-import { xapiEventStatus } from './xapiEvent';
+import xapiEventStatus from './status';
 
 const IS_FUNCTION         = '[object Function]';
 const MUST_HAVE_ID        = 'Must have an id';
@@ -8,7 +8,7 @@ const MUST_HAVE_CALLBACK  = 'Must have a correct callback function';
 const NOT_VALID           = 'Not valid event:';
 const VALID               = 'Valid event';
 
-export const xapiEventValidator = {
+export default {
   isValidEvent(e) {
     this.log('isValidEvent', { e });
     return !_hasErrors.call(this, e).errors.length;
@@ -45,7 +45,7 @@ function _mustHaveId(xapiEvent) {
 
 function _mustHaveUniqueId(xapiEvent) {
   this.log('_mustHaveUniqueId', { xapiEvent });
-  if (!!this.events.length && _isExistingId(this.events, xapiEvent)) {
+  if (!!this.xapiEvents.length && _isExistingId(this.xapiEvents, xapiEvent)) {
     this.errors.push(MUST_HAVE_UNIQUE_ID);
     return false;
   }

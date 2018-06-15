@@ -1,7 +1,7 @@
 import { assert } from 'chai';
-import { xapiEvents } from '../src/xapiEvents';
-import { EventStatus } from '../src/events/event-status';
-import { xapiEvent } from '../src/events/xapi-event';
+import * as xapiEvents from '../src/index';
+import EventStatus from '../src/xapi-events/status';
+import xapiEvent from '../src/xapi-events/default';
 
 let
   actor = {
@@ -17,9 +17,11 @@ describe('xapiEvents library', () => {
   it('should be able to set the default info', () => {
     xapiEvents.init(actor, authority);
 
+    console.log(xapiEvents);
+
     assert.ok(xapiEvents.baseStatement, 'it should have the "baseStatement" property defined');
-    assert.ok(xapiEvents.events, 'it should have the "events" property defined');
-    assert.notOk(xapiEvents.events.length, 'it should have the "events" array empty at the beginning');
+    assert.ok(xapiEvents.xapiEvents, 'it should have the "events" property defined');
+    assert.notOk(xapiEvents.xapiEvents.length, 'it should have the "events" array empty at the beginning');
   });
 
   it('should be able to check if an event is invalid', () => {
