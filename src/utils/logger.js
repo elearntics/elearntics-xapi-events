@@ -1,4 +1,4 @@
-import config from '../config';
+import config from '../config/app';
 
 export default {
   debug: config.debug,
