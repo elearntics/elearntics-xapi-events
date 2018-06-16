@@ -2,6 +2,7 @@ import xapiEventStatus from './status';
 
 const IS_FUNCTION         = '[object Function]';
 const MUST_HAVE_ID        = 'Must have an id';
+const MUST_HAVE_NAME      = 'Must have a name';
 const MUST_HAVE_UNIQUE_ID = 'Must have a unique id';
 const MUST_HAVE_STATUS    = 'Must have a status';
 const MUST_HAVE_CALLBACK  = 'Must have a correct callback function';
@@ -57,7 +58,7 @@ function _mustHaveName(xapiEvent) {
   this.log('_mustHaveName', { xapiEvent });
 
   if (!xapiEvent.name) {
-    this.errors.push(MUST_HAVE_ID);
+    this.errors.push(MUST_HAVE_NAME);
     return false;
   }
 
@@ -87,7 +88,7 @@ function _isValidStatus(xapiEvent) {
 function _mustHaveCallbackFunction(xapiEvent) {
   this.log('_mustHaveCallbackFunction', { xapiEvent });
 
-  if (!xapiEvent && _isNotFunction(xapiEvent.callback)) {
+  if (!xapiEvent && !_isFunction(xapiEvent.callback)) {
     this.errors.push(MUST_HAVE_CALLBACK);
     return false;
   }
@@ -95,8 +96,8 @@ function _mustHaveCallbackFunction(xapiEvent) {
   return true;
 }
 
-function _isNotFunction(callback) {
-  return Object.prototype.toString.call(callback) !== IS_FUNCTION;
+function _isFunction(callback) {
+  return Object.prototype.toString.call(callback) === IS_FUNCTION;
 }
 
 function _isExistingId(events, xapiEvent) {

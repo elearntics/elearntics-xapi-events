@@ -10,7 +10,7 @@ defaultStatement.verb = 'selected';
 var events = [
   {
     id: 'select-text',
-    callback: logEvent,
+    callback: xapiEvents.send,
     name: 'mouseup',
     elementSelectors: ['.text'],
     isValid: false,

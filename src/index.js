@@ -6,7 +6,7 @@ import xapiStatementDefault from './xapi-statements/default';
 import xapiStatementContext from './xapi-statements/context';
 import xapiLrsMiddleware from './xapi-lrs/middleware';
 
-import { Observable } from 'rxjs';
+import { fromEvent } from 'rxjs';
 
 export const log = logger.log;
 export const baseStatement = {};
@@ -74,9 +74,9 @@ export const listenEnabledEvents = function() {
       xapiEvent.elementSelectors.forEach((elementSelector) => {
         const targetElements = this.targetElements[elementSelector];
         if (targetElements.elements.length) {
-          const subscription = Observable.fromEvent(targetElements.elements, xapiEvent.name);
+          const subscription = fromEvent(targetElements.elements, xapiEvent.name);
           subscription.subscribe((e) => xapiEvent.callback.call(this, e, xapiEvent));
-          this.targetElements[elementsSelector].subscriptions.push(subscription);
+          this.targetElements[elementSelector].subscriptions.push(subscription);
         }
       });
     }
@@ -118,8 +118,8 @@ export const addEvent = function(xapiEvent) {
 export const addEvents = function(xapiEvents) {
   this.log('addEvents', { xapiEvents });
 
-  xapiEvents.forEach((e) => {
-    this.addEvent(e);
+  xapiEvents.forEach((xapiEvent) => {
+    this.addEvent(xapiEvent);
   });
 
   this.getTargetElements();
