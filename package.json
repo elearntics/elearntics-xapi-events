@@ -1,11 +1,11 @@
 {
   "name": "@elearntics/xapi-events",
   "version": "0.2.0",
-  "description": "Register xAPI statements in a LRS",
+  "description": "Manage xAPI statements triggered by user interaction",
   "scripts": {
     "lint": "eslint src/*.js",
     "test": "mocha --compilers js:babel-core/register",
-    "serve": "http-server"
+    "serve": "gulp watch"
   },
   "keywords": [
     "xAPI",
@@ -15,7 +15,8 @@
     "LRS",
     "Events",
     "Student",
-    "Tracking"
+    "Tracking",
+    "elearntics"
   ],
   "author": "Elena Torro <elenatorro@gmail.com> (https://github.com/elenatorro)",
   "license": "MIT",

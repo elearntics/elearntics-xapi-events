@@ -211,15 +211,24 @@ export const getDefaultEvent = function () {
   return Object.assign({}, xapiEventDefault);
 };
 
+export const getDefaultStatement = function () {
+  return Object.assign({}, xapiStatementDefault);
+};
+
 export const isValidEvent = function(e) {
   this.log('isValidEvent', { e });
   return xapiEventValidator.isValidEvent.call(this, e);
 };
 
-export const send = function (statement) {
-  return xapiLrsMiddleware.connect.post(statement);
-};
+export const LRS = {
+  setConfig: function (config) {
+    Object.assign(xapiLrsMiddleware.config, config);
+  },
 
+  send: function (statement) {
+    return xapiLrsMiddleware.connect.post(statement, xapiLrsMiddleware.config);
+  }
+};
 
 /* Private */
 
