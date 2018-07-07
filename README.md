@@ -14,7 +14,7 @@ $ npm install @elearntics/xapi-events
 ### Option 1: Import `xapiEvent` as a module
 
 ```js 
-import xapiEvents from 'xapievents';
+import xapiEvents from '@elearntics/xapi-events';
 ```
 
 ### Option 2: Load the script in your HTML
