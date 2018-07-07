@@ -23,6 +23,8 @@ import xapiEvents from 'xapievents';
 <script src="node_modules/@elearntics/xapi-events/dist/xapi-events.js" type="text/javascript"></script>
 ```
 
+### Basic example 
+
 ```js
 const defaultStatement = xapiEvents.getDefaultStatement();
 
@@ -153,7 +155,7 @@ Gets all the elements that are listening to the event.
 
 Returns if the event is well-formed.
 
-### LSR
+### LRS
 
 You can set the credentials to connect to your LRS.
 
