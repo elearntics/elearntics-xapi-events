@@ -130,11 +130,6 @@ export const removeEventById = function (id) {
   this.xapiEvents = this.xapiEvents.filter((xapiEvent) => xapiEvent.id !== id);
 };
 
-export const removeEventsByElementId = function (id) {
-  this.log('removeEventsByElementId', { id });
-  this.xapiEvents = this.xapiEvents.filter((xapiEvent) => xapiEvent.elementId !== id);
-};
-
 export const enableEvent = function (e) {
   this.log('enableEvent', { e });
   this.xapiEvents.forEach((xapiEvent) => {
@@ -155,15 +150,6 @@ export const enableEventById = function (id) {
   this.log('enableEventById');
   this.xapiEvents.forEach((xapiEvent) => {
     if (id === xapiEvent.id) {
-      xapiEvent.status = xapiEventStatus.ON;
-    }
-  });
-};
-
-export const enableElementsByElementId = function (elementId) {
-  this.log('enableElementsByElementId', { elementId });
-  this.xapiEvents.forEach((xapiEvent) => {
-    if (elementId === xapiEvent.elementId) {
       xapiEvent.status = xapiEventStatus.ON;
     }
   });
@@ -194,14 +180,6 @@ export const disableEventById = function (id) {
   });
 };
 
-export const disableElementsByElementId = function (id) {
-  this.log('disableElementsByElementId', { id });
-  this.xapiEvents.forEach((xapiEvent) => {
-    if (id === xapiEvent.elementId) {
-      xapiEvent.status = xapiEventStatus.OFF;
-    }
-  });
-};
 
 export const getDefaultEvent = function () {
   return Object.assign({}, xapiEventDefault);
@@ -225,8 +203,6 @@ export const LRS = {
     return xapiLrsMiddleware.connect.post(statement, xapiLrsMiddleware.config);
   }
 };
-
-/* Private */
 
 function _buildBaseStatement (actor, authority) {
   let context;
