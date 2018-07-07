@@ -1,12 +1,11 @@
 .babelrc
-.codeclimate.yml
 .DS_Store
 .eslintignore
 .eslintrc
 .gitignore
-.istanbul.yml
 .jshintrc
 .travis.yml
 coverage
 src
 test
+example
