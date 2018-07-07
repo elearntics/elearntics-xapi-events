@@ -1,11 +1,12 @@
 {
   "name": "@elearntics/xapi-events",
-  "version": "0.2.0",
+  "version": "0.1.0",
   "description": "Manage xAPI statements triggered by user interaction",
   "scripts": {
     "lint": "eslint src/*.js",
     "test": "mocha --compilers js:babel-core/register",
-    "serve": "gulp watch"
+    "serve": "gulp watch",
+    "build": "gulp"
   },
   "keywords": [
     "xAPI",
@@ -60,10 +61,10 @@
   "dependencies": {},
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/elenatorro/xAPI-javascript-events.git"
+    "url": "git+https://github.com/elearntics/xapi-events.git"
   },
   "bugs": {
-    "url": "https://github.com/elenatorro/xAPI-javascript-events/issues"
+    "url": "https://github.com/elearntics/xapi-events/issues"
   },
-  "homepage": "https://github.com/elenatorro/xAPI-javascript-events#readme"
+  "homepage": "https://github.com/elearntics/xapi-events#readme"
 }
