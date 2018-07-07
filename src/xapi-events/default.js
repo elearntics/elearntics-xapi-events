@@ -1,12 +1,12 @@
-import { EventStatus } from './event-status';
+import xapiEventStatus from './status';
 
-export const xapiEvent = {
+export default {
   id: undefined,
   callback: undefined,
   name: undefined,
   elementSelectors: [],
   targetElements: [],
   statement: undefined,
-  status: EventStatus.DISABLED,
+  status: xapiEventStatus.DISABLED,
   isValid: false
 };

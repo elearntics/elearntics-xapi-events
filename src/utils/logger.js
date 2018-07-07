@@ -1,9 +1,10 @@
-import { xAPIEventsConfig } from '../config';
+import config from '../config/app';
 
-export const logger = {
-  debug: xAPIEventsConfig.debug,
-  log(...message) {
-    if (!xAPIEventsConfig.debug) { return false; }
+export default {
+  debug: config.debug,
+
+  log (...message) {
+    if (!config.debug) { return false; }
     try {
       console.log(...message);
       return true;

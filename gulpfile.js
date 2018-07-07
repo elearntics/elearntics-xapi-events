@@ -1,14 +1,13 @@
 'use strict';
 
-const  browserify  = require('browserify');
-const  buffer      = require('vinyl-buffer');
-const  connect     = require('gulp-connect');
-const  gulp        = require('gulp');
-const  livereload  = require('gulp-livereload');
-const  source      = require('vinyl-source-stream');
-const  sourcemaps  = require('gulp-sourcemaps');
-const  uglify      = require('gulp-uglify');
-
+const browserify  = require('browserify');
+const buffer      = require('vinyl-buffer');
+const connect     = require('gulp-connect');
+const gulp        = require('gulp');
+const livereload  = require('gulp-livereload');
+const source      = require('vinyl-source-stream');
+const sourcemaps  = require('gulp-sourcemaps');
+const uglify      = require('gulp-uglify');
 
 const
   BABEL_CONFIG = Object.freeze({
@@ -24,7 +23,7 @@ const
   DIST_FILENAME_MIN  = 'xapi-events.min.js',
   DIST_PATH          = 'dist',
   MAPS_PATH          = './maps',
-  SRC_FILE           = 'src/xapiEvents.js',
+  SRC_FILE           = 'src/index.js',
   WATCH_FILES        = ['src/*.js', 'src/**/*.js', 'test/*.js', 'test/**/*.js']
 ;
 

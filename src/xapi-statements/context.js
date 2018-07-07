@@ -1,4 +1,4 @@
-export const xAPIEventStatementContext = {
+export default {
   registration: undefined,
   instructor: undefined,
   team: undefined,

@@ -1,4 +1,4 @@
-export const xAPIEventStatement = {
+export default {
   actor: undefined,
   verb: undefined,
   object: undefined,
