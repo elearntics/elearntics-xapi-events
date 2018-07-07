@@ -1,5 +1,5 @@
 export default {
-  post(statement, config) {
+  post (statement, config) {
     const USER_BASE_64 = btoa(`${config.USERNAME}:${config.PASSWORD}`);
     const AUTHORIZATION = `Basic ${USER_BASE_64}`;
     const ContentType = 'application/json;charset=UTF-8';

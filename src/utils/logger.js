@@ -3,7 +3,7 @@ import config from '../config/app';
 export default {
   debug: config.debug,
 
-  log(...message) {
+  log (...message) {
     if (!config.debug) { return false; }
     try {
       console.log(...message);
